@@ -8,7 +8,7 @@ function initDatabase() {
 
 function loadSloka(bab) {
   database.transaction(function(transaction) {
-    transaction.executeSql("select bab, "Sloka " || ayat as title, indo as text from book where bab = ?;", [bab], function(ignored, res) {
+    transaction.executeSql("select bab, 'Sloka ' || ayat as title, indo as text from book where bab = ?;", [bab], function(ignored, res) {
       for (var i = 0; i < res.rows.length; i++) {
         welcomescreen_slides.push(res.rows.item(i));
       }
@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   };
 
-  var welcomescreen_slides = [
-    {
+  var welcomescreen_slides = [];
+    /*{
       id: 'slide0', 
       title: 'Slide 1 >', 
       picture: '<div class="tutorialicon">♥</div>',
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       picture: '<div class="tutorialicon">☆</div>',
       text: 'Thanks for reading! Enjoy this app or go to <a class="tutorial-previous-slide" href="#">previous slide</a>.<br><br><a class="tutorial-close-btn" href="#">End Tutorial</a>'
     } 
-  ];
+  ];*/
 
   Framework7.use(Framework7WelcomescreenPlugin);
 
@@ -85,8 +85,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initOnDeviceReady: true,
     on: {
       init: function () {
-        //initDatabase();
-        navigator.notification.alert('Halooo!!');
+        initDatabase();
+        //navigator.notification.alert('Halooo!!');
       },
     }
   });
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
   Dom7('.tutorial-open-btn').click(function () {
-    //loadSloka(1);
+    loadSloka(1);
     app.welcomescreen.open();  
   });
   
