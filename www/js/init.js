@@ -8,12 +8,12 @@ function initDatabase() {
 
 function loadSloka() {
   database.transaction(function(transaction) {
-    transaction.executeSql("select ayat as id, ayat as title, indo as text from book where bab = 1 order by ayat;", [], function(ignored, res) {
-      welcomescreen_slides = [];
-      for (var i = 0; i < res.rows.length; i++) {
+    transaction.executeSql("select indo from book where ayat = 1;", [], function(ignored, res) {
+      //welcomescreen_slides = [];
+      /*for (var i = 0; i < res.rows.length; i++) {
         welcomescreen_slides.push(res.rows.item(i));
-      }
-      //navigator.notification.alert('Got upperText result (ALL CAPS): ' + res.rows.item(0).upperText);
+      }*/
+      navigator.notification.alert('The result: ' + res.rows.item(0).indo);
     });
   }, function(error) {
     navigator.notification.alert('SELECT data error: ' + error.message);
@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   };
 
-  var welcomescreen_slides = [];
-    /*{
+  var welcomescreen_slides = [
+    {
       id: 'slide0', 
       title: 'Slide 1 >', 
       picture: '<div class="tutorialicon">♥</div>',
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       picture: '<div class="tutorialicon">☆</div>',
       text: 'Thanks for reading! Enjoy this app or go to <a class="tutorial-previous-slide" href="#">previous slide</a>.<br><br><a class="tutorial-close-btn" href="#">End Tutorial</a>'
     } 
-  ];*/
+  ];
 
   Framework7.use(Framework7WelcomescreenPlugin);
 
