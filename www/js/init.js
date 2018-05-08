@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   };
 
-  var welcomescreen_slides = [];
-    /*{
+  var welcomescreen_slides = [
+    {
       id: 'slide0', 
       title: 'Slide 1 >', 
       picture: '<div class="tutorialicon">♥</div>',
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       picture: '<div class="tutorialicon">☆</div>',
       text: 'Thanks for reading! Enjoy this app or go to <a class="tutorial-previous-slide" href="#">previous slide</a>.<br><br><a class="tutorial-close-btn" href="#">End Tutorial</a>'
     } 
-  ];*/
+  ];
 
   Framework7.use(Framework7WelcomescreenPlugin);
 
@@ -85,7 +85,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initOnDeviceReady: true,
     on: {
       init: function () {
-        initDatabase();
+        //initDatabase();
+        navigator.notification.alert('Halooo!!');
       },
     }
   });
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
   Dom7('.tutorial-open-btn').click(function () {
-    loadSloka(1);
+    //loadSloka(1);
     app.welcomescreen.open();  
   });
   
