@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
   Dom7('.tutorial-open-btn').click(function () {
-    loadSloka();
+    loadSloka(1);
     app.welcomescreen.open();  
   });
   
