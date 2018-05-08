@@ -13,6 +13,7 @@ function loadSloka(bab) {
       for (var i = 0; i < res.rows.length; i++) {
         welcomescreen_slides.push(res.rows.item(i));
       }
+      app.welcomescreen.slides = welcomescreen_slides;
       //navigator.notification.alert('The result: ' + res.rows.item(0).indo);
     });
   }, function(error) {
