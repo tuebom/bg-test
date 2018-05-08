@@ -1,19 +1,19 @@
 var database = null;
 
 function initDatabase() {
-  database = window.sqlitePlugin.openDatabase({name: 'bg.db', location: 'default', createFromLocation: 1});
+  database = window.sqlitePlugin.openDatabase({name: 'bg.db'});
 }
 
 //var babSloka;
 
-function loadSloka() {
-  database.transaction(function(transaction) {
-    transaction.executeSql("select indo from book where ayat = 1;", [], function(ignored, res) {
-      //welcomescreen_slides = [];
-      /*for (var i = 0; i < res.rows.length; i++) {
+function loadSloka(bab) {
+  database.transaction(function(transaction, bab) {
+    transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where ayat = ?;", [bab], function(ignored, res) {
+      welcomescreen_slides = [];
+      for (var i = 0; i < res.rows.length; i++) {
         welcomescreen_slides.push(res.rows.item(i));
-      }*/
-      navigator.notification.alert('The result: ' + res.rows.item(0).indo);
+      }
+      //navigator.notification.alert('The result: ' + res.rows.item(0).indo);
     });
   }, function(error) {
     navigator.notification.alert('SELECT data error: ' + error.message);
@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   };
 
-  var welcomescreen_slides = [
-    {
+  var welcomescreen_slides = [];
+    /*{
       id: 'slide0', 
       title: 'Slide 1 >', 
       picture: '<div class="tutorialicon">♥</div>',
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       picture: '<div class="tutorialicon">☆</div>',
       text: 'Thanks for reading! Enjoy this app or go to <a class="tutorial-previous-slide" href="#">previous slide</a>.<br><br><a class="tutorial-close-btn" href="#">End Tutorial</a>'
     } 
-  ];
+  ];*/
 
   Framework7.use(Framework7WelcomescreenPlugin);
 
@@ -86,8 +86,43 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initOnDeviceReady: true,
     on: {
       init: function () {
-        initDatabase();
-        //navigator.notification.alert('Halooo!!');
+    function copyDatabaseFile(dbName) {
+
+      var sourceFileName = cordova.file.applicationDirectory + 'www/' + dbName;
+      var targetDirName = cordova.file.dataDirectory;
+
+      return Promise.all([
+        new Promise(function (resolve, reject) {
+          resolveLocalFileSystemURL(sourceFileName, resolve, reject);
+        }),
+        new Promise(function (resolve, reject) {
+          resolveLocalFileSystemURL(targetDirName, resolve, reject);
+        })
+      ]).then(function (files) {
+        var sourceFile = files[0];
+        var targetDir = files[1];
+        return new Promise(function (resolve, reject) {
+          targetDir.getFile(dbName, {}, resolve, reject);
+        }).then(function () {
+          console.log("file already copied");
+        }).catch(function () {
+          console.log("file doesn't exist, copying it");
+          return new Promise(function (resolve, reject) {
+            sourceFile.copyTo(targetDir, dbName, resolve, reject);
+          }).then(function () {
+            console.log("database file copied");
+          });
+        });
+      });
+    }
+
+    copyDatabaseFile('bg.db').then(function () {
+      // success! :)
+      initDatabase();
+    }).catch(function (err) {
+      // error! :(
+      console.log(err);
+    });
       },
     }
   });
@@ -99,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
   Dom7('.tutorial-open-btn').click(function () {
-    loadSloka();
+    loadSloka(1);
     app.welcomescreen.open();  
   });
   
