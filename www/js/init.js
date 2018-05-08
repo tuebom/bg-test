@@ -7,8 +7,9 @@ function initDatabase() {
 //var babSloka;
 
 function loadSloka(bab) {
-  database.transaction(function(transaction) {
+  database.transaction(function(transaction, bab) {
     transaction.executeSql("select bab, 'Sloka ' || ayat as title, indo as text from book where bab = ?;", [bab], function(ignored, res) {
+      welcomescreen_slides = [];
       for (var i = 0; i < res.rows.length; i++) {
         welcomescreen_slides.push(res.rows.item(i));
       }
@@ -86,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     on: {
       init: function () {
         initDatabase();
-        //navigator.notification.alert('Halooo!!');
+        navigator.notification.alert('Halooo!!');
       },
     }
   });
@@ -98,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
   Dom7('.tutorial-open-btn').click(function () {
-    loadSloka(1);
+    loadSloka();
     app.welcomescreen.open();  
   });
   
