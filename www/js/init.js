@@ -8,7 +8,7 @@ function initDatabase() {
 
 function loadSloka() {
   database.transaction(function(transaction) {
-    transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where bab = 1 order by ayat;", [], function(ignored, res) {
+    transaction.executeSql("select ayat as id, ayat as title, indo as text from book where bab = 1 order by ayat;", [], function(ignored, res) {
       welcomescreen_slides = [];
       for (var i = 0; i < res.rows.length; i++) {
         welcomescreen_slides.push(res.rows.item(i));
