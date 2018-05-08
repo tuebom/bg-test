@@ -1,26 +1,3 @@
-var database = null;
-
-function initDatabase() {
-  database = window.sqlitePlugin.openDatabase({name: 'bg.db'});
-}
-
-//var babSloka;
-
-function loadSloka(bab) {
-  database.transaction(function(transaction, bab) {
-    transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where ayat = ?;", [bab], function(ignored, res) {
-      welcomescreen_slides = [];
-      for (var i = 0; i < res.rows.length; i++) {
-        welcomescreen_slides.push(res.rows.item(i));
-      }
-      //app.welcomescreen.slides = welcomescreen_slides;
-      navigator.notification.alert('The result: ' + res.rows.item(0).text);
-      navigator.notification.alert('welcomescreen_slides size: ' + welcomescreen_slides.length);
-    });
-  }, function(error) {
-    navigator.notification.alert('SELECT data error: ' + error.message);
-  });
-}
 
 document.addEventListener("DOMContentLoaded", function(event) { 
 
@@ -47,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   };
 
+  var database = null;
+  
   var welcomescreen_slides = [];
     /*{
       id: 'slide0', 
@@ -88,44 +67,66 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initOnDeviceReady: true,
     on: {
       init: function () {
-    function copyDatabaseFile(dbName) {
+      
+        function copyDatabaseFile(dbName) {
 
-      var sourceFileName = cordova.file.applicationDirectory + 'www/' + dbName;
-      var targetDirName = cordova.file.dataDirectory;
+          var sourceFileName = cordova.file.applicationDirectory + 'www/' + dbName;
+          var targetDirName = cordova.file.dataDirectory;
 
-      return Promise.all([
-        new Promise(function (resolve, reject) {
-          resolveLocalFileSystemURL(sourceFileName, resolve, reject);
-        }),
-        new Promise(function (resolve, reject) {
-          resolveLocalFileSystemURL(targetDirName, resolve, reject);
-        })
-      ]).then(function (files) {
-        var sourceFile = files[0];
-        var targetDir = files[1];
-        return new Promise(function (resolve, reject) {
-          targetDir.getFile(dbName, {}, resolve, reject);
-        }).then(function () {
-          console.log("file already copied");
-        }).catch(function () {
-          console.log("file doesn't exist, copying it");
-          return new Promise(function (resolve, reject) {
-            sourceFile.copyTo(targetDir, dbName, resolve, reject);
-          }).then(function () {
-            console.log("database file copied");
+          return Promise.all([
+            new Promise(function (resolve, reject) {
+              resolveLocalFileSystemURL(sourceFileName, resolve, reject);
+            }),
+            new Promise(function (resolve, reject) {
+              resolveLocalFileSystemURL(targetDirName, resolve, reject);
+            })
+          ]).then(function (files) {
+            var sourceFile = files[0];
+            var targetDir = files[1];
+            return new Promise(function (resolve, reject) {
+              targetDir.getFile(dbName, {}, resolve, reject);
+            }).then(function () {
+              console.log("file already copied");
+            }).catch(function () {
+              console.log("file doesn't exist, copying it");
+              return new Promise(function (resolve, reject) {
+                sourceFile.copyTo(targetDir, dbName, resolve, reject);
+              }).then(function () {
+                console.log("database file copied");
+              });
+            });
           });
-        });
-      });
-    }
+        }
 
-    copyDatabaseFile('bg.db').then(function () {
-      // success! :)
-      initDatabase();
-    }).catch(function (err) {
-      // error! :(
-      console.log(err);
-    });
+        copyDatabaseFile('bg.db').then(function () {
+          // success! :)
+          initDatabase();
+        }).catch(function (err) {
+          // error! :(
+          console.log(err);
+        });
+      },     
+    },
+    methods: {
+      initDatabase: function () {
+        database = window.sqlitePlugin.openDatabase({name: 'bg.db'});
       },
+      loadSloka: function (bab) {
+        database.transaction(function(transaction, bab) {
+          transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where ayat = ?;", [bab], function(ignored, res) {
+            app.welcomescreen.slides = [];
+            for (var i = 0; i < res.rows.length; i++) {
+              app.welcomescreen.slides.push(res.rows.item(i));
+            }
+            //app.welcomescreen.slides = welcomescreen_slides;
+            app.dialog.alert('The result: ' + res.rows.item(0).text);
+            app.dialog.alert('welcomescreen_slides size: ' + app.welcomescreen.slides.length);
+          });
+        }, function(error) {
+          navigator.notification.alert('SELECT data error: ' + error.message);
+        });
+      }
+
     }
   });
 
