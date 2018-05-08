@@ -15,6 +15,7 @@ function loadSloka(bab) {
       }
       //app.welcomescreen.slides = welcomescreen_slides;
       navigator.notification.alert('The result: ' + res.rows.item(0).text);
+      navigator.notification.alert('welcomescreen_slides size: ' + welcomescreen_slides.length);
     });
   }, function(error) {
     navigator.notification.alert('SELECT data error: ' + error.message);
