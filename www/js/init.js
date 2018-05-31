@@ -66,6 +66,32 @@ document.addEventListener("DOMContentLoaded", function(event) {
     data: function () {
       return {
         db: null,
+        // sloka = [
+        //   {
+        //     id: 'slide0', 
+        //     title: 'Slide 1 >', 
+        //     picture: '<div class="tutorialicon">♥</div>',
+        //     text: 'Welcome to this tutorial. In the <a class="tutorial-next-link" href="#">next steps</a> we will guide you through a manual that will teach you how to use this app.<br><br>Swipe to continue →'
+        //   },
+        //   {
+        //     id: 'slide1',
+        //     title: '< Slide 2 >', 
+        //     picture: '<div class="tutorialicon">✲</div>',
+        //     text: 'This is slide 2<br><br>Swipe to continue →'
+        //   },
+        //   {
+        //     id: 'slide2',
+        //     title: '< Slide 3 >', 
+        //     picture: '<div class="tutorialicon">♫</div>',
+        //     text: 'This is slide 3<br><br>Swipe to continue →'
+        //   },
+        //   {
+        //     id: 'slide3',
+        //     // title: 'NO TITLE', 
+        //     picture: '<div class="tutorialicon">☆</div>',
+        //     text: 'Thanks for reading! Enjoy this app or go to <a class="tutorial-previous-slide" href="#">previous slide</a>.<br><br><a class="tutorial-close-btn" href="#">End Tutorial</a>'
+        //   } 
+        // ]
       }
     },
     init: true,
@@ -116,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       loadSloka: function (bab) {
         var db = app.data.db;
         db.transaction(function(transaction) {
-          transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where ayat = ?;", [bab], function(ignored, res) {
+          transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where bab = ?;", [bab], function(ignored, res) {
             app.welcomescreen.slides = [];
             for (var i = 0; i < res.rows.length; i++) {
               app.welcomescreen.slides.push(res.rows.item(i));
@@ -140,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 
   Dom7('.tutorial-open-btn').click(function () {
-    loadSloka(1);
+    app.methods.loadSloka(1);
     app.welcomescreen.open();  
   });
   
