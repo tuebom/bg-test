@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   };
 
-  var database = null;
+  //var database = null;
   
-  var welcomescreen_slides = [];
+  //var welcomescreen_slides = [];
     /*{
       id: 'slide0', 
       title: 'Slide 1 >', 
@@ -60,8 +60,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
     name: 'welcomescreen-demo',
     id: 'de.timoernst.f7.welcomescreen',
     welcomescreen: {
-      slides: welcomescreen_slides,
+      slides: [],
       options: options,
+    },
+    data: function () {
+      return {
+        db: null,
+      }
     },
     init: true,
     initOnDeviceReady: true,
@@ -100,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         copyDatabaseFile('bg.db').then(function () {
           // success! :)
-          initDatabase();
+          app.data.db = window.sqlitePlugin.openDatabase({name: 'bg.db'});
         }).catch(function (err) {
           // error! :(
           console.log(err);
@@ -108,11 +113,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
       },     
     },
     methods: {
-      initDatabase: function () {
-        database = window.sqlitePlugin.openDatabase({name: 'bg.db'});
-      },
       loadSloka: function (bab) {
-        database.transaction(function(transaction, bab) {
+        var db = app.data.db;
+        db.transaction(function(transaction) {
           transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where ayat = ?;", [bab], function(ignored, res) {
             app.welcomescreen.slides = [];
             for (var i = 0; i < res.rows.length; i++) {
