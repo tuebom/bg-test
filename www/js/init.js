@@ -174,7 +174,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   Dom7('.tutorial-open-btn').click(function () {
     app.methods.loadSloka(1);
-    app.welcomescreen.initSwiper();
     app.welcomescreen.open();
   });
   
