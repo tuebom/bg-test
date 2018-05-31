@@ -66,32 +66,32 @@ document.addEventListener("DOMContentLoaded", function(event) {
     data: function () {
       return {
         db: null,
-        // sloka = [
-        //   {
-        //     id: 'slide0', 
-        //     title: 'Slide 1 >', 
-        //     picture: '<div class="tutorialicon">♥</div>',
-        //     text: 'Welcome to this tutorial. In the <a class="tutorial-next-link" href="#">next steps</a> we will guide you through a manual that will teach you how to use this app.<br><br>Swipe to continue →'
-        //   },
-        //   {
-        //     id: 'slide1',
-        //     title: '< Slide 2 >', 
-        //     picture: '<div class="tutorialicon">✲</div>',
-        //     text: 'This is slide 2<br><br>Swipe to continue →'
-        //   },
-        //   {
-        //     id: 'slide2',
-        //     title: '< Slide 3 >', 
-        //     picture: '<div class="tutorialicon">♫</div>',
-        //     text: 'This is slide 3<br><br>Swipe to continue →'
-        //   },
-        //   {
-        //     id: 'slide3',
-        //     // title: 'NO TITLE', 
-        //     picture: '<div class="tutorialicon">☆</div>',
-        //     text: 'Thanks for reading! Enjoy this app or go to <a class="tutorial-previous-slide" href="#">previous slide</a>.<br><br><a class="tutorial-close-btn" href="#">End Tutorial</a>'
-        //   } 
-        // ]
+        sloka: [
+          {
+            id: 'slide0', 
+            title: 'Slide 1 >', 
+            picture: '<div class="tutorialicon">♥</div>',
+            text: 'Welcome to this tutorial. In the <a class="tutorial-next-link" href="#">next steps</a> we will guide you through a manual that will teach you how to use this app.<br><br>Swipe to continue →'
+          },
+          {
+            id: 'slide1',
+            title: '< Slide 2 >', 
+            picture: '<div class="tutorialicon">✲</div>',
+            text: 'This is slide 2<br><br>Swipe to continue →'
+          },
+          {
+            id: 'slide2',
+            title: '< Slide 3 >', 
+            picture: '<div class="tutorialicon">♫</div>',
+            text: 'This is slide 3<br><br>Swipe to continue →'
+          },
+          {
+            id: 'slide3',
+            // title: 'NO TITLE', 
+            picture: '<div class="tutorialicon">☆</div>',
+            text: 'Thanks for reading! Enjoy this app or go to <a class="tutorial-previous-slide" href="#">previous slide</a>.<br><br><a class="tutorial-close-btn" href="#">End Tutorial</a>'
+          } 
+        ]
       }
     },
     init: true,
@@ -129,31 +129,38 @@ document.addEventListener("DOMContentLoaded", function(event) {
           });
         }
 
-        copyDatabaseFile('bg.db').then(function () {
-          // success! :)
-          app.data.db = window.sqlitePlugin.openDatabase({name: 'bg.db'});
-        }).catch(function (err) {
-          // error! :(
-          console.log(err);
-        });
+        // copyDatabaseFile('bg.db').then(function () {
+        //   // success! :)
+        //   app.data.db = window.sqlitePlugin.openDatabase({name: 'bg.db'});
+        // }).catch(function (err) {
+        //   // error! :(
+        //   console.log(err);
+        // });
       },     
     },
     methods: {
       loadSloka: function (bab) {
-        var db = app.data.db;
-        db.transaction(function(transaction) {
-          transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where bab = ?;", [bab], function(ignored, res) {
-            app.welcomescreen.slides = [];
-            for (var i = 0; i < res.rows.length; i++) {
-              app.welcomescreen.slides.push(res.rows.item(i));
-            }
-            //app.welcomescreen.slides = welcomescreen_slides;
-            app.dialog.alert('The result: ' + res.rows.item(0).text);
-            app.dialog.alert('welcomescreen_slides size: ' + app.welcomescreen.slides.length);
-          });
-        }, function(error) {
-          navigator.notification.alert('SELECT data error: ' + error.message);
-        });
+
+        app.welcomescreen.slides = app.data.sloka;
+        // for (var i = 0; i < app.data.sloka.length; i++) {
+        //   app.welcomescreen.slides.push(app.data.sloka[i]);
+        // }
+        app.dialog.alert('welcomescreen_slides size: ' + app.welcomescreen.slides.length);
+        
+        // var db = app.data.db;
+        // db.transaction(function(transaction) {
+        //   transaction.executeSql("select ayat as id, 'Sloka ' || ayat as title, indo as text from book where bab = ?;", [bab], function(ignored, res) {
+        //     app.welcomescreen.slides = [];
+        //     for (var i = 0; i < res.rows.length; i++) {
+        //       app.welcomescreen.slides.push(res.rows.item(i));
+        //     }
+        //     //app.welcomescreen.slides = welcomescreen_slides;
+        //     app.dialog.alert('The result: ' + res.rows.item(0).text);
+        //     app.dialog.alert('welcomescreen_slides size: ' + app.welcomescreen.slides.length);
+        //   });
+        // }, function(error) {
+        //   navigator.notification.alert('SELECT data error: ' + error.message);
+        // });
       }
 
     }
@@ -167,7 +174,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   Dom7('.tutorial-open-btn').click(function () {
     app.methods.loadSloka(1);
-    app.welcomescreen.open();  
+    app.welcomescreen.initSwiper();
+    app.welcomescreen.open();
   });
   
   Dom7(document).on('click', '.tutorial-next-link', function (e) {
